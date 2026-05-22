@@ -1,49 +1,62 @@
-import { use, useState } from 'react'
-import Persons from "./components/Persons.jsx"
-import Filter from './components/Filter.jsx'
-import PersonForm from './components/PersonForm.jsx'
+import { use, useEffect, useState } from "react";
+import axios from "axios";
+import Persons from "./components/Persons.jsx";
+import Filter from "./components/Filter.jsx";
+import PersonForm from "./components/PersonForm.jsx";
+import Notification from "./components/Notification.jsx";
+import noteServices from "./services/notes.js"
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
-
+  const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   
+  useEffect(() => {
+    noteServices.getAll().then((response) => {
+      console.log(response.data);
+      setPersons(response.data);
+    });
+  }, []);
+  
+
   return (
     <div>
       <h2>Phonebook</h2>
 
-      <Filter 
-        searchQuery={searchQuery} 
-        setSearchQuery={setSearchQuery}
+      <Notification
+        successMessage={successMessage}
+        errorMessage={errorMessage}
       />
+
+      <Filter searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       <h2>Add New</h2>
 
-      <PersonForm 
-        persons={persons} 
-        setPersons={setPersons} 
-        newName={newName} 
-        setNewName={setNewName} 
-        newNumber={newNumber} 
+      <PersonForm
+        persons={persons}
+        setPersons={setPersons}
+        newName={newName}
+        setNewName={setNewName}
+        newNumber={newNumber}
         setNewNumber={setNewNumber}
+        setSuccessMessage={setSuccessMessage}
+        setErrorMessage={setErrorMessage}
       />
-      
+
       <h2>Numbers</h2>
 
-      <Persons 
-        persons={persons} 
+      <Persons
+        persons={persons}
+        setPersons={setPersons}
         searchQuery={searchQuery}
+        setSuccessMessage={setSuccessMessage}
+        setErrorMessage={setErrorMessage}
       />
     </div>
-  )
-}
+  );
+};
 
-
-export default App
+export default App;

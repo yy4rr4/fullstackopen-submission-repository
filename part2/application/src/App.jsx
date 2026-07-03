@@ -1,26 +1,35 @@
-import { use, useEffect, useState } from "react";
-import axios from "axios";
-import Persons from "./components/Persons.jsx";
-import Filter from "./components/Filter.jsx";
-import PersonForm from "./components/PersonForm.jsx";
-import Notification from "./components/Notification.jsx";
-import noteServices from "./services/notes.js"
+import { use, useEffect, useState } from 'react'
+import axios from 'axios'
+import Persons from './components/Persons.jsx'
+import Filter from './components/Filter.jsx'
+import PersonForm from './components/PersonForm.jsx'
+import Notification from './components/Notification.jsx'
+import noteServices from './services/notes.js'
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [successMessage, setSuccessMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  
+
   useEffect(() => {
-    noteServices.getAll().then((response) => {
-      console.log(response.data);
-      setPersons(response.data);
-    });
-  }, []);
-  
+    noteServices
+      .getAll()
+      .then((initialPersons) => {
+        if (Array.isArray(initialPersons)) {
+          setPersons(initialPersons)
+        } else {
+          console.error('Backend did not return an array:', initialPersons)
+          setPersons([])
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch initial data:', error)
+        setPersons([])
+      })
+  }, [])
 
   return (
     <div>
@@ -56,7 +65,7 @@ const App = () => {
         setErrorMessage={setErrorMessage}
       />
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -1,7 +1,26 @@
+### Get all entries to find a target ID
+GET http://localhost:3001/api/persons
+
+### Create a temporary entry
+# @name createPerson
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Aleksandr Home",
-    "number": "20302004110"
+  "name": "Local Test Subject",
+  "number": "111-222-333"
+}
+
+### Delete the entry
+# Replace <ID> with the real id string returned from the POST request above
+DELETE http://localhost:3001/api/persons/6a467d943679b6765ebaf0b8
+
+### Update an entry (PUT)
+# Replace <ID> with a real id string
+PUT http://localhost:3001/api/persons/6a451e0c531e8b510c6c8d81
+Content-Type: application/json
+
+{
+  "name": "Arto Vihavainen",
+  "number": "555-555-555"
 }

@@ -1,5 +1,5 @@
-import axios from "axios";
-import noteServices from "../services/notes";
+import axios from 'axios'
+import noteServices from '../services/notes'
 
 const PersonForm = ({
   persons,
@@ -9,78 +9,83 @@ const PersonForm = ({
   newNumber,
   setNewNumber,
   setSuccessMessage,
+  setErrorMessage
 }) => {
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     const newPersonObj = {
       name: newName,
-      number: newNumber,
-    };
+      number: newNumber
+    }
     const alreadyExists = persons.some(
-      (person) => newPersonObj.name === person.name,
-    );
+      (person) => newPersonObj.name === person.name
+    )
 
     if (alreadyExists) {
       const answer = confirm(
-        `${newPersonObj.name} is already added to phonebook, replace the old number with a new one?`,
-      );
+        `${newPersonObj.name} is already added to phonebook, replace the old number with a new one?`
+      )
 
       if (answer) {
         const personObj = persons.find(
-          (person) => newPersonObj.name === person.name,
-        );
+          (person) => newPersonObj.name === person.name
+        )
 
-        const updatedPersonObj = { ...personObj, number: newNumber };
+        const updatedPersonObj = { ...personObj, number: newNumber }
         noteServices
           .put(personObj.id, updatedPersonObj)
-          .then((response) => {
-            console.log(response.data);
+          .then((returnedPerson) => {
             setPersons(
-              persons.map((p) => (p.id === personObj.id ? response.data : p)),
-            );
-            setNewName("");
-            setNewNumber("");
-            setSuccessMessage(`${personObj.name} has a new number now`);
+              persons.map((p) => (p.id === personObj.id ? returnedPerson : p))
+            )
+            setNewName('')
+            setNewNumber('')
+            setSuccessMessage(`${personObj.name} has a new number now`)
             setTimeout(() => {
-              setSuccessMessage(null);
+              setSuccessMessage(null)
             }, 5000)
           })
           .catch((err) => {
-            console.log(`${err} has occured!`);
-          });
+            setErrorMessage(err.response.data.error)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
       } else {
-        return;
+        return
       }
     } else {
       noteServices
         .create(newPersonObj)
-        .then((response) => {
-          console.log(response.data);
-          setPersons(persons.concat(response.data));
-          setNewName("");
-          setNewNumber("");
-          setSuccessMessage(`Added ${newPersonObj.name}`);
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          setSuccessMessage(`Added ${newPersonObj.name}`)
           setTimeout(() => {
-            setSuccessMessage(null);
-          }, 5000);
+            setSuccessMessage(null)
+          }, 5000)
         })
         .catch((err) => {
-          console.log(`${err} has occured!`);
-        });
+          setErrorMessage(err.response.data.error)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        name:{" "}
+        name:{' '}
         <input
           value={newName}
           onChange={(event) => setNewName(event.target.value)}
         />
       </div>
       <div>
-        number:{" "}
+        number:{' '}
         <input
           value={newNumber}
           onChange={(event) => setNewNumber(event.target.value)}
@@ -90,7 +95,7 @@ const PersonForm = ({
         <button type="submit">add</button>
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default PersonForm;
+export default PersonForm

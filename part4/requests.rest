@@ -1,0 +1,13 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Harry Potter",
+    "author": "J.K.Rowling",
+    "url": "https://www.harrypotter.com/writing-by-jk-rowling",
+    "likes": 1500000
+}
+
+###
+
+GET http://localhost:3001/api/blogs

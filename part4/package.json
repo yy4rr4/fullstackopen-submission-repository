@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test",
-    "start": "node index.js",
-    "dev": "node --watch index.js",
-    "ling": "eslint ."
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development node --watch index.js",
+    "test": "cross-env  NODE_ENV=test node --test",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
@@ -15,9 +15,13 @@
   "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.6",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
     "eslint": "^10.6.0",
     "express": "^5.2.1",
     "mongoose": "^9.7.3"
+  },
+  "devDependencies": {
+    "supertest": "^7.2.2"
   }
 }

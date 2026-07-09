@@ -1,0 +1,51 @@
+### 1. Create a user (Required because the POST /api/blogs route needs at least one user in the DB)
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "root",
+  "name": "Superuser",
+  "password": "password"
+}
+
+### 2. Create a new blog (This will automatically link to the user created above)
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Understanding Mongoose Populate",
+  "author": "Jane Doe",
+  "url": "https://example.com/mongoose-populate",
+  "likes": 12
+}
+
+### 3. Fetch all blogs (Verify the 'user' field is a populated object, not just an ID)
+GET http://localhost:3001/api/blogs
+
+### 4. Fetch all users (Verify the 'blogs' array contains populated blog objects)
+GET http://localhost:3001/api/users
+
+### Login to get token
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "password"
+}
+
+### Create a blog with authorization
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjZhNGUyYThkMDdiMTQzYjFhNmVmZDQwMSIsImlhdCI6MTc4MzUxMzkzMywiZXhwIjoxNzgzNTE3NTMzfQ.h8SXBEXwjELb82O4v1-WMGkf9ELtN4CMFJ92gxw-cu4
+
+{
+  "title": "Testing Token Auth",
+  "author": "Admin",
+  "url": "http://localhost",
+  "likes": 5
+}
+
+### Execute the authorized Delete operation
+DELETE http://localhost:3001/api/blogs/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjZhNGUyYThkMDdiMTQzYjFhNmVmZDQwMSIsImlhdCI6MTc4MzUxMzkzMywiZXhwIjoxNzgzNTE3NTMzfQ.h8SXBEXwjELb82O4v1-WMGkf9ELtN4CMFJ92gxw-cu4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjZhNGUyYThkMDdiMTQzYjFhNmVmZDQwMSIsImlhdCI6MTc4MzUxMzkzMywiZXhwIjoxNzgzNTE3NTMzfQ.h8SXBEXwjELb82O4v1-WMGkf9ELtN4CMFJ92gxw-cu4

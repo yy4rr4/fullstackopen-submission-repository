@@ -1,31 +1,39 @@
-const config = require('./utils/config')
 const express = require('express')
-const app = express()
-const logger = require('./utils/logger')
-const middleware = require('./utils/middleware')
 const mongoose = require('mongoose')
 const blogsRouter = require('./controllers/blogs')
-const usersRouter = require('./controllers/users')
+const {
+  errorHandler,
+  tokenExtractor,
+  userExtractor,
+} = require('./utils/middleware')
+const config = require('./utils/config')
+const logger = require('./utils/logger')
+const userRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 
+const app = express()
+
+logger.info(`Connecting...`)
 mongoose
-  .connect(config.MONGODB_URI)
+  .connect(config.MONGODB_URI, { family: 4 })
   .then(() => {
-    logger.info('connected to MongoDB Atlas')
+    logger.info('Connected to MongoDB')
   })
   .catch((error) => {
-    logger.error('error connecting to MongoDB:', error.message)
+    logger.error(`Error connecting to MongoDB: ${error.message}`)
   })
 
 app.use(express.json())
-
-app.use(middleware.tokenExtractor)
-
-app.use('/api/blogs', middleware.userExtractor, blogsRouter)
-app.use('/api/users', usersRouter)
+app.use(tokenExtractor)
+app.use('/api/blogs', blogsRouter)
+app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
 
-app.use(middleware.unknownEndpoint)
-app.use(middleware.errorHandler)
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing')
+  app.use('/api/testing', testingRouter)
+}
+
+app.use(errorHandler)
 
 module.exports = app
